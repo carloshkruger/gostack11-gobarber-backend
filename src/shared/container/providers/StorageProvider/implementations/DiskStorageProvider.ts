@@ -5,6 +5,8 @@ import IStorageProvider from '../models/IStorageProvider';
 
 class DiskStorageProvider implements IStorageProvider {
   public async saveFile(file: string): Promise<string> {
+    await this.createDirectory(path.resolve(uploadConfig.uploadsFolder));
+
     await fs.promises.rename(
       path.resolve(uploadConfig.tmpFolder, file),
       path.resolve(uploadConfig.uploadsFolder, file),
@@ -23,6 +25,10 @@ class DiskStorageProvider implements IStorageProvider {
     }
 
     await fs.promises.unlink(filePath);
+  }
+
+  public async createDirectory(path: string): Promise<void> {
+    await fs.promises.mkdir(path, { recursive: true });
   }
 }
 
